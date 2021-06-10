@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>span_Ok</name>
+   <tag></tag>
+   <elementGuidId>4fd89f60-5a49-4ca3-84c3-fc3708b14da9</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value>span.text-17.md-text-20.leading-24.font-bold.uppercase</value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//div[@id='region-main']/div/div[2]/div[2]/div/div/div/div/div[4]/button/span</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>span</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>text-17 md-text-20 leading-24 font-bold uppercase</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>Ok</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>id(&quot;region-main&quot;)/div[@class=&quot;micro-miner-view micro-component-view&quot;]/div[2]/div[@class=&quot;absolute flex justify-center items-center md-items-start top-0 left-0 right-0 w-full h-full bg-dark-1 md-bg-main md-pt-20 z-10&quot;]/div[@class=&quot;wrapper grid min-h-0 md-min-h-1-2 md-relative md-rounded-lg md-bg-dark-4&quot;]/div[@class=&quot;self-center py-4 md-py-10 md-mx-6&quot;]/div[@class=&quot;text-center&quot;]/div[1]/div[@class=&quot;inset-x-0 p-4 md-static&quot;]/button[@class=&quot;w-full md-w-auto md-px-10 h-12 px-3 md-py-1 bg-accent text-dark-2 rounded-full md-rounded select-none cursor-pointer md-hover-shadow-big focus-outline-none md-focus-bg-accent-2 md-focus-shadow-small border-0&quot;]/span[@class=&quot;text-17 md-text-20 leading-24 font-bold uppercase&quot;]</value>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:idRelative</name>
+      <type>Main</type>
+      <value>//div[@id='region-main']/div/div[2]/div[2]/div/div/div/div/div[4]/button/span</value>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Withdrawal in process'])[1]/following::span[1]</value>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)=concat('I see a ', '&quot;', 'Network Error', '&quot;', ' message. What should I do?')])[1]/following::span[1]</value>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='About us'])[1]/preceding::span[1]</value>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Help'])[1]/preceding::span[1]</value>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>//*/text()[normalize-space(.)='Ok']/parent::*</value>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//div[4]/button/span</value>
+   </webElementXpaths>
+</WebElementEntity>
