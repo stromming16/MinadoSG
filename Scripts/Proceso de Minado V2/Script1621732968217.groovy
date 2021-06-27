@@ -14,196 +14,193 @@ import com.kms.katalon.core.testobject.TestObject as TestObject
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
+import com.sun.org.apache.xml.internal.resolver.helpers.Debug as Debug
 import internal.GlobalVariable as GlobalVariable
 import org.openqa.selenium.Keys as Keys
-import com.kms.katalon.core.webui.driver.DriverFactory
-
-import functionalities.ExecuteCmd
-import internal.GlobalVariable as GlobalVariable
-import org.openqa.selenium.Keys as Keys
-
 import functionalities.*
 import helper.Keywords as Keywords
-import java.sql.Timestamp;
-import configurations.CustomDriver;
+import java.sql.Timestamp as Timestamp
+import com.kms.katalon.core.webui.driver.DriverFactory as DriverFactory
+import configurations.CustomDriver as CustomDriver
+import helper.SgTestObjects as SgTestObjects
+import helper.EnvConfig as EnvConfig
+import helper.MinerProcess as MinerProcess
+import helper.Configurations as Configurations
 
-Keywords k = new Keywords();
-AccountManagement am = new AccountManagement();
+/*
+ *
+ *
+ * 	Este bucle for recorre los datos del Test Data llamado "emails". Se debe considerar la inciacion y finalizacion del mismo,
+ *  segun la lista de corres disponibles del Test Data.
+ *
+ *
+*/
+Timestamp timestamp = new Timestamp(System.currentTimeMillis())
 
-ExecuteCmd ec = new ExecuteCmd();
-ClipBoard cb = new ClipBoard();
-CustomDriver cd = new CustomDriver();
+Keywords k = new Keywords()
 
-String dataTest = "cuentas_para_asociar";
+SgTestObjects sg = new SgTestObjects()
 
-while(true){
-	//crea un archivo csv por cada corrida de minado de las 176 
-	Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-	String csvFile = k.KEY_FOLDER_DEPO+timestamp.getTime()+"-DEPO.csv";
-	am.createFileCSV(csvFile, ",");
-	
+AccountManagement am = new AccountManagement()
+
+MinerProcess mp = new MinerProcess()
+
+ExecuteCmd ec = new ExecuteCmd()
+
+EnvConfig env = new EnvConfig()
+
+CustomDriver cd = new CustomDriver()
+
+Configurations cnf = new Configurations();
+
+String dataTest = 'cuentas'
+
+String dataTestPath = findTestData(dataTest).getSourceUrl()
+
+//findTestData(dataTest).getRowNumbers()
+while (true) {
 	for (def row = 1; row <= findTestData(dataTest).getRowNumbers(); row++) {
-		Boolean passed = false;
-		while(!passed) {
-			passed = false;
-			
-			if(row == 7) {
-				passed = true;
-				break;
-			}
-			
+		boolean passed = false
+
+		boolean withLogin = findTestData(dataTest).getValue('amount', row) == "";
+
+		String email
+
+		String sessionEmail
+
+		String password
+
+		email = findTestData(dataTest).getValue('email', row)
+
+		password = findTestData(dataTest).getValue('password', row)
+		
+		String cache = cnf.CHROME_DATA_DIR_PATH + "Profile " + row + "\\Cache";
+		String code_cache = cnf.CHROME_DATA_DIR_PATH + "Profile " + row + "\\Code Cache";
+		
+		String clear_cache_cmd_1 = "if exist \"" + cache + "\" rd /s /q \"" + cache + "\"";
+		String clear_cache_cmd_2 = "if exist \"" + code_cache + "\" rd /s /q \"" + code_cache + "\"";
+
+		while (!(passed)) {
 			try {
-				cb.copy(findTestData(dataTest).getValue('email', row));
-				DriverFactory.changeWebDriver(cd.getDriver((row).toString()));
-				//ec.executeAmkScript(k.KEY_AMK_ACTIVATE_ANTICAPTCHA_PROFILE);
-				
-				//login objects
-				TestObject welcome, email, password, login;
-				
-				welcom = findTestObject('Object Repository/LoginObjects/Page_Page not found - StormGain/h1_Welcome to StormGain');
-				email = findTestObject('Object Repository/LoginObjects/Page_Page not found - StormGain/input_Email_login');
-				password = findTestObject('Object Repository/LoginObjects/Page_Page not found - StormGain/input_Restore password_password');
-				login = findTestObject('Object Repository/LoginObjects/Page_Page not found - StormGain/input_Please verify that you are not a robot_btn btn-mint btn-login');
-				
-				//logout objects
-				TestObject icon, triangle, bonus, logout;
-				
-				icon = findTestObject('Object Repository/LogOut/Page_Cryptominer - StormGain/div_Affiliate programme_loyalty-icon');
-				triangle = findTestObject('Object Repository/LogOut/Page_Cryptominer - StormGain/div_USDT_triangle');
-				bonus = findTestObject('Object Repository/LogOut/Page_Cryptominer - StormGain/span_Bonus');
-				logout = findTestObject('Object Repository/LogOut/Page_Cryptominer - StormGain/span_Logout');
-				
-				//amount objects
-				TestObject amount, withDbtn, alerteMassage, alertOkBtn;
-				
-				amount = findTestObject('Object Repository/Depositar/Page_Cryptominer - StormGain/span_0.14');
-				withDbtn = findTestObject('Object Repository/Depositar/Page_Cryptominer - StormGain/button_Withdraw (min 10 USDT)');
-				alerteMassage = findTestObject('Object Repository/Depositar/Page_Cryptominer - StormGain/div_It usually takes from 5 minutes to 2 hours for withdrawn funds to be credited to your account. Please wait to receive the funds');
-				alertOkBtn = findTestObject('Object Repository/Depositar/Page_Cryptominer - StormGain/button_Ok');
-				
-				//recaptcha objects
-				TestObject recaptchaTerms, recap;
-				
-				recaptchaTerms = findTestObject('Object Repository/Recaptcha/Page_Page not found - StormGain/div_reCAPTCHAPrivacy - Terms');
-				recap = findTestObject('Object Repository/Recaptcha/Page_Page not found - StormGain/iframe_Remember email_a-7rmw5ukxstx4');
-				
-				//miner objects
-				TestObject minerBtn;
-				minerBtn = findTestObject('Object Repository/Miner/Page_Cryptominer - StormGain/button_ActivateMining 4 hours');
-				
-				//Generate Code objects
-				TestObject titleGc;
-				titleGc = findTestObject('Object Repository/GenerateCode/Page_Page not found - StormGain/div_Generate code');
-				
-				
-				WebUI.navigateToUrl("https://app.stormgain.com/crypto-miner/");
-				WebUI.maximizeWindow(FailureHandling.CONTINUE_ON_FAILURE);
-				WebUI.waitForPageLoad(30);
-				
-				Boolean iconPresent = false, trianglePresent = false, bonusPresent = false;
-				
-				iconPresent = WebUI.verifyElementPresent(icon, 1, FailureHandling.CONTINUE_ON_FAILURE);
-				trianglePresent = WebUI.verifyElementPresent(triangle, 1, FailureHandling.CONTINUE_ON_FAILURE);
-				bonusPresent = WebUI.verifyElementPresent(bonus, 1, FailureHandling.CONTINUE_ON_FAILURE);
-				
-				if(!iconPresent || !trianglePresent || !bonusPresent) {
-					Boolean welcomePresent;
-					welcomePresent = WebUI.verifyElementPresent(welcom, 1, FailureHandling.CONTINUE_ON_FAILURE);
-					
-					if(!welcomePresent) {
-						WebUI.navigateToUrl("https://app.stormgain.com/crypto-miner/");
-						WebUI.waitForPageLoad(30);
-						welcomePresent = WebUI.verifyElementPresent(welcom, 1, FailureHandling.CONTINUE_ON_FAILURE);
+				//Abrir el explorador
+				DriverFactory.changeWebDriver(cd.getDriver(row.toString()))
+
+				WebUI.maximizeWindow()
+
+				//ec.executeCMD(k.KEY_AMK_ACTIVATE_ANTICAPTCHA_PROFILE);
+				//Inicio de sesion
+				boolean networkErrorPre = false
+
+				boolean error_loginPre = false
+
+				boolean msg_mail_sentPre = false
+
+				boolean _000USDPre = false
+
+				boolean span_USDTPre = false
+
+				boolean div_USDT_trianglePre = false
+
+				boolean emailIsPre1 = false
+
+				boolean emailIsPre = false
+
+				boolean verified_badge_emailPre = false
+
+				boolean unverified_badge_emailPre = false
+
+				boolean span_Edit_emailPre = false
+
+				if (true) {
+					//navegar a la pantalla de perfil//findTestData(dataTest).getValue('amount', row) == ""
+					WebUI.navigateToUrl('https://app.stormgain.com/profile-settings/#modal_login')
+
+					WebUI.waitForPageLoad(20)
+
+					//verifica se aparece el error de red
+					networkErrorPre = WebUI.verifyElementPresent(sg.networkError, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+					if (networkErrorPre) {
+						passed = true
+
+						WebUI.closeBrowser()
+
+						continue
 					}
 					
-					if(welcomePresent) {
-						WebUI.clearText(email, FailureHandling.CONTINUE_ON_FAILURE);
-						WebUI.setText(email, findTestData(dataTest).getValue('email', row));
-						
-						WebUI.clearText(password, FailureHandling.CONTINUE_ON_FAILURE);
-						WebUI.setText(password, findTestData(dataTest).getValue('password', row));
-						
-						WebUI.click(login);
-						WebUI.waitForPageLoad(30);
-						
-						//Verificar Error de Codigo Generado
-						Boolean titleGcPresent;
-						titleGcPresent = WebUI.verifyElementPresent(titleGc, 1, FailureHandling.CONTINUE_ON_FAILURE);
-						if(titleGcPresent) {
-							passed = true;
-							WebUI.closeBrowser();
-							break;
+					//Si hay un usuario en sesion se debe verificar que sea el correspondiente y si no, cerrar sesion
+					_000USDPre = WebUI.verifyElementPresent(sg.span_0_00USDT, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+					span_USDTPre = WebUI.verifyElementPresent(sg.span_USDT, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+					div_USDT_trianglePre = WebUI.verifyElementPresent(sg.div_USDT_triangle, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+					//Pregunta si ya hay una sesion abierta en el perfil
+					if ((_000USDPre || span_USDTPre) || div_USDT_trianglePre) {
+						emailIsPre = WebUI.verifyElementPresent(sg.div_email_session, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+						emailIsPre1 = WebUI.verifyElementPresent(sg.div_email_session_1, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+						if (emailIsPre || emailIsPre1) {
+							sessionEmail = WebUI.getText(sg.div_email_session, FailureHandling.CONTINUE_ON_FAILURE)
+
+							if ((sessionEmail == '') || (sessionEmail == ' ')) {
+								sessionEmail = WebUI.getText(sg.div_email_session_1, FailureHandling.CONTINUE_ON_FAILURE)
+							}
+							
+							if (sessionEmail != email) {
+								println((sessionEmail + ' ') + email)
+
+								WebUI.callTestCase(findTestCase('AccountManagement/SignOut'), null, FailureHandling.STOP_ON_FAILURE)
+
+								WebUI.navigateToUrl('https://app.stormgain.com/crypto-miner/')
+
+								WebUI.callTestCase(findTestCase('AccountManagement/Login'), [('email') : email, ('password') : env.genericPass],
+									FailureHandling.STOP_ON_FAILURE)
+							}
+							
+							_000USDPre = WebUI.verifyElementPresent(sg.span_0_00USDT, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+							span_USDTPre = WebUI.verifyElementPresent(sg.span_USDT, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+							div_USDT_trianglePre = WebUI.verifyElementPresent(sg.div_USDT_triangle, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+							if ((_000USDPre || span_USDTPre) || div_USDT_trianglePre) {
+								passed = mp.miner(dataTestPath, row)
+							}
+						} else {
+							passed = false
 						}
-						
-						//verificar recaptcha
-						Boolean recaptchaIsThere;
-						welcomePresent = WebUI.verifyElementPresent(recap, 1, FailureHandling.CONTINUE_ON_FAILURE) || WebUI.verifyElementPresent(recaptchaTerms, 1, FailureHandling.CONTINUE_ON_FAILURE);
-						if(welcomePresent) {
-							WebUI.delay(30);
+						//Si no hay sesion abierta entonses iniciala
+					} else {
+						WebUI.callTestCase(findTestCase('AccountManagement/Login'), [('email') : email, ('password') : env.genericPass],
+							FailureHandling.STOP_ON_FAILURE)
+
+						_000USDPre = WebUI.verifyElementPresent(sg.span_0_00USDT, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+						span_USDTPre = WebUI.verifyElementPresent(sg.span_USDT, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+						div_USDT_trianglePre = WebUI.verifyElementPresent(sg.div_USDT_triangle, 1, FailureHandling.CONTINUE_ON_FAILURE)
+
+						if ((_000USDPre || span_USDTPre) || div_USDT_trianglePre) {
+							passed = mp.miner(dataTestPath, row)
 						}
-						
-						ec.executeAmkScript(k.KEY_AMK_RECAPTCHA_SGLOGIN)
 					}
+				} else {
+					passed = mp.miner(dataTestPath, row)
 				}
 				
-				//Verificar monto y hacer clic en cargar dinero cartera si pasa de los 10
-				Boolean amountPresent = false, withDbtnPresent = false, alerteMassagePresent = false, alertOkBtnPresent = false;
-				
-				String _amount = WebUI.getText(amount, FailureHandling.CONTINUE_ON_FAILURE);
-				
-				Float max = 10.00;
-				
-				println Float.parseFloat(_amount.replace("≈", ''))
-				println (Float.parseFloat(_amount.replace("≈", '')) >= max)
-				
-				if(Float.parseFloat(_amount.replace("≈", '')) >= max) {
-					withDbtnPresent = WebUI.verifyElementPresent(withDbtn, 1, FailureHandling.CONTINUE_ON_FAILURE);
-					println withDbtnPresent;
-					
-					if(withDbtnPresent) {
-						WebUI.click(withDbtn);
-						WebUI.delay(1);
-						alerteMassagePresent = WebUI.verifyElementPresent(alerteMassage, 1, FailureHandling.CONTINUE_ON_FAILURE);
-						alertOkBtnPresent = WebUI.verifyElementPresent(alertOkBtn, 1, FailureHandling.CONTINUE_ON_FAILURE);
-						
-						if(alerteMassagePresent) {
-							println alerteMassagePresent
-							println alertOkBtnPresent
-							
-							WebUI.click(alertOkBtn);
-							
-							passed = true;
-						}else {
-							passed = false;
-						}
-						
-						//escribir cuenta en csv
-						am.addAccountToCsv(csvFile, findTestData(dataTest).getValue('email', row), findTestData(dataTest).getValue('password', row), _amount);
-						
-						
-					}
-				}else {
-					//hacer clck en minar
-					Boolean minerBtnPresent = false;
-					minerBtnPresent = WebUI.verifyElementPresent(minerBtn, 0, FailureHandling.CONTINUE_ON_FAILURE)
-					println minerBtnPresent
-					
-					if(minerBtnPresent) {
-						WebUI.click(minerBtn);
-						WebUI.delay(0.5)
-					}
-					
-					passed = true
-					
-				}
-				
-				WebUI.closeBrowser();
-				
-			} catch (Exception e) {
-				passed = false;
-				WebUI.closeBrowser();
+				WebUI.closeBrowser()
+				//ec.executeCMD(clear_cache_cmd_1);
+				//ec.executeCMD(clear_cache_cmd_2);
+			}
+			catch (Exception e) {
+				WebUI.closeBrowser()
+
+				println(e)
 			}
 		}
 	}
-	WebUI.delay(600)
+	
+	WebUI.delay(1)
 }

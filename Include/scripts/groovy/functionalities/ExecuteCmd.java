@@ -5,12 +5,12 @@ import java.io.*;
 
 public class ExecuteCmd {
 	
-	public void executeAmkScript(String AmkScriptPath) {
+	public void executeCMD(String cmd) {
 		
 		try {
 			
 			ProcessBuilder builder = new ProcessBuilder(
-		            "cmd.exe", "/c", AmkScriptPath);
+		            "cmd.exe", "/c", cmd);
 		    
 			builder.redirectErrorStream(true);
 		    Process p = builder.start();
